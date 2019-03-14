@@ -29,6 +29,7 @@ Semaphore* Semaphore_alloc(int id, int count){
   r->id=id;
   r->count=count;
   List_init(&r->descriptors);
+  List_init(&r->waiting_descriptors);
   return r;
 }
 

@@ -18,6 +18,8 @@ void internal_semOpen(){
   int sem_id=running->syscall_args[0];
   int sem_type=running->syscall_args[1];
 
+  
+
   // mi prendo il Semaphore corrispondente tramite il suo id nella lista dei semafori,
   // creata in disastrOS_globals.h
   Semaphore* sem = SemaphoreList_byId(&semaphores_list, sem_id);
@@ -26,6 +28,7 @@ void internal_semOpen(){
   if(!sem){
     sem = Semaphore_alloc(sem_id,sem_type);
     List_insert(&semaphores_list,semaphores_list.last,&sem);
+    printf("Semaphore sem_id=%d e sem_type=%d, allocato!\n",sem_id, sem_type);
   }
 
   // alloco il SemDescriptor riferito a quel semaphore
@@ -44,9 +47,10 @@ void internal_semOpen(){
   sem_desc->ptr=sem_desc_ptr;
 
   // inserisco nella lista descrittori del semaforo sem
-  List_insert(&sem->descriptors,sem->descriptors.last,sem);
+  List_insert(&sem->descriptors,sem->descriptors.last,sem_desc_ptr);
 
   // setto valore di ritorno della syscall al fd del descrittore e poi esco
   running->syscall_retvalue= sem_desc->fd;
   return;
 }
+
