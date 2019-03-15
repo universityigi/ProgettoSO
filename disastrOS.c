@@ -314,7 +314,7 @@ int disastrOS_semopen(int resource_id, int type){
     return disastrOS_syscall(DSOS_CALL_SEMOPEN, resource_id, type);
 }
 // semclose
-void disastrOS_semclose(int fd){
+int disastrOS_semclose(int fd){
   disastrOS_syscall(DSOS_CALL_SEMCLOSE,fd);
 }
 
