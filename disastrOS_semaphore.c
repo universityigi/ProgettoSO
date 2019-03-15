@@ -29,7 +29,7 @@ Semaphore* Semaphore_alloc(int id, int count){
   r->id=id;
   r->count=count;
   List_init(&r->descriptors);
-  List_init(&r->waiting_descriptors);
+  List_init(&r->waiting_descriptors);  // perchè semafori hanno questo elemento nella struttura che deve essere inizializzato
   return r;
 }
 

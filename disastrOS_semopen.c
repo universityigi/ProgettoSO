@@ -18,8 +18,6 @@ void internal_semOpen(){
   int sem_id=running->syscall_args[0];
   int sem_type=running->syscall_args[1];
 
-  
-
   // mi prendo il Semaphore corrispondente tramite il suo id nella lista dei semafori,
   // creata in disastrOS_globals.h
   Semaphore* sem = SemaphoreList_byId(&semaphores_list, sem_id);
