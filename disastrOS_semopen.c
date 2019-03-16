@@ -7,12 +7,6 @@
 #include "disastrOS_semdescriptor.h"
 
 void internal_semOpen(){
-  // prendo la syscall
-  int syscall_num=running->syscall_num;
-
-  // controlli per verificare che quella num della syscall esista effettivamente in disastrOS
-  if(syscall_num<0 || syscall_num> DSOS_MAX_SYSCALLS)
-    return DSOS_ESYSCALL_OUT_OF_RANGE;
 
   // prendo id e il type della syscall 
   int sem_id=running->syscall_args[0];
@@ -25,7 +19,7 @@ void internal_semOpen(){
   // se semaphore sem non è stato allocato/aperto lo alloco
   if(!sem){
     sem = Semaphore_alloc(sem_id,sem_type);
-    List_insert(&semaphores_list,semaphores_list.last,&sem);
+    List_insert(&semaphores_list,semaphores_list.last,(ListItem*)sem);
     printf("Semaphore sem_id=%d e sem_type=%d, allocato!\n",sem_id, sem_type);
   }
 
@@ -33,7 +27,7 @@ void internal_semOpen(){
   SemDescriptor* sem_desc = SemDescriptor_alloc(running->last_sem_fd,sem,running);
 
   // inserisco nella lista dei descrittori del semaphore del processo
-  List_insert(&running->sem_descriptors, running->sem_descriptors.last,sem_desc);
+  List_insert(&running->sem_descriptors, running->sem_descriptors.last,(ListItem*)sem_desc);
 
   // incremento il valore di fd
   running->last_sem_fd++;
@@ -45,7 +39,7 @@ void internal_semOpen(){
   sem_desc->ptr=sem_desc_ptr;
 
   // inserisco nella lista descrittori del semaforo sem
-  List_insert(&sem->descriptors,sem->descriptors.last,sem_desc_ptr);
+  List_insert(&sem->descriptors,sem->descriptors.last,(ListItem*)sem_desc_ptr);
 
   // setto valore di ritorno della syscall al fd del descrittore e poi esco
   running->syscall_retvalue= sem_desc->fd;

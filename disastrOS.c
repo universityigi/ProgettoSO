@@ -317,6 +317,10 @@ int disastrOS_semopen(int resource_id, int type){
 int disastrOS_semclose(int fd){
   disastrOS_syscall(DSOS_CALL_SEMCLOSE,fd);
 }
+// semwait
+int disastrOS_semwait(int fd){
+  disastrOS_syscall(DSOS_CALL_SEMWAIT,fd);
+}
 
 
 

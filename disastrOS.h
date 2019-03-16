@@ -31,7 +31,9 @@ void disastrOS_shutdown();
 // semopen
 int disastrOS_semopen(int resource_id, int type);
 // semclose
-void disastrOS_semclose(int fd);
+int disastrOS_semclose(int fd);
+// semwait
+int disastrOS_semwait(int fd);
 
 // timers
 void disastrOS_sleep(int);

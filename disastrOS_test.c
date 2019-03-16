@@ -22,20 +22,15 @@ void childFunction(void* args){
   printf("fd=%d\n", fd);
 
   printf("----OPEN SEMAPHORES----\n");
-  int sem1=disastrOS_semopen(1,1);
-  int sem2=disastrOS_semopen(2,1);
-  int sem3=disastrOS_semopen(2,2);
+  int sem1=disastrOS_semopen(1,0);
 
-  printf("PID: %d, terminating\n", disastrOS_getpid());
+  disastrOS_printStatus();
 
-  for (int i=0; i<(disastrOS_getpid()+1); ++i){
-    printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
-    disastrOS_sleep((20-disastrOS_getpid())*5);
-  }
+  disastrOS_semwait(sem1);
+  disastrOS_printStatus();
+
   printf("----CLOSE SEMAPHORES----\n");
   disastrOS_semclose(sem1);
-  disastrOS_semclose(sem2);
-  disastrOS_semclose(sem3);
   disastrOS_exit(disastrOS_getpid()+1);
 }
 
