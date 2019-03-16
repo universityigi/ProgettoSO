@@ -29,6 +29,9 @@ void internal_semWait(){
     // inserisco processo chiamante nella waiting semaphore list
     List_insert(&sem->waiting_descriptors, sem->waiting_descriptors.last,sem_desc_ptr);
 
+    // inserisco processo nella waiting list
+    List_insert(&waiting_list, waiting_list.last,running);
+
     // cambio stato da running a waiting
     running->status=Waiting;
 
