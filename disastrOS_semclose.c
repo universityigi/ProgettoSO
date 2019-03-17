@@ -19,18 +19,18 @@ void internal_semClose(){
     return;
   }
   // rimuovo descrittore
-  List_detach(&running->sem_descriptors,sem_desc);
+  List_detach(&running->sem_descriptors,(ListItem*)sem_desc);
 
   // prendo il semaforo dal descrittore sem_desc
   Semaphore* sem=sem_desc->semaphore;
   // prendo puntatore alla entry nella resource list di quel descrittore sem_desc
-  SemDescriptorPtr* sem_desc_ptr = List_detach(&sem->descriptors, sem_desc->ptr);
+  SemDescriptorPtr* sem_desc_ptr =(SemDescriptorPtr*) List_detach(&sem->descriptors, (ListItem*)sem_desc->ptr);
 
   // controllo che se non ci sono descrittore nel semaforo sem, sia nella lista
   // dei descrittori sia nella lista , rimuovo il semaphore dalla lista dei semafori
   // dealloco
   if(sem->descriptors.size==0 && sem->waiting_descriptors.size==0){
-    List_detach(&semaphores_list,sem);
+    List_detach(&semaphores_list,(ListItem*)sem);
     Semaphore_free(sem);
   }
 

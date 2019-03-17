@@ -28,19 +28,19 @@ void internal_semWait(){
   sem->count=sem->count-1;
   if(sem->count<0){
       // rimuovo descrittori
-    List_detach(&sem->descriptors, sem_desc);
+    List_detach(&sem->descriptors, (ListItem*)sem_desc);
 
     // inserisco processo chiamante nella waiting semaphore list
-    List_insert(&sem->waiting_descriptors, sem->waiting_descriptors.last,sem_desc_ptr);
+    List_insert(&sem->waiting_descriptors, sem->waiting_descriptors.last,(ListItem*)sem_desc_ptr);
 
     // inserisco processo nella waiting list
-    List_insert(&waiting_list, waiting_list.last,running);
+    List_insert(&waiting_list, waiting_list.last,(ListItem*)running);
 
     // cambio stato da running a waiting
     running->status=Waiting;
 
     // prendo prossimo processo da schedulare
-    PCB* p_next= List_detach(&ready_list,ready_list.first);
+    PCB* p_next= (PCB*)List_detach(&ready_list,ready_list.first);
 
     // setto running
     running=p_next;

@@ -315,15 +315,15 @@ int disastrOS_semopen(int resource_id, int type){
 }
 // semclose
 int disastrOS_semclose(int fd){
-  disastrOS_syscall(DSOS_CALL_SEMCLOSE,fd);
+   return disastrOS_syscall(DSOS_CALL_SEMCLOSE,fd);
 }
 // semwait
 int disastrOS_semwait(int fd){
-  disastrOS_syscall(DSOS_CALL_SEMWAIT,fd);
+  return disastrOS_syscall(DSOS_CALL_SEMWAIT,fd);
 }
 // sempost
 int disastrOS_sempost(int fd){
-  disastrOS_syscall(DSOS_CALL_SEMPOST,fd);
+  return disastrOS_syscall(DSOS_CALL_SEMPOST,fd);
 }
 
 

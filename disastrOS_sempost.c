@@ -33,16 +33,16 @@ void internal_semPost(){
   // se count <=0 allora devo mettere il processo corrente nella ready list
   if(sem->count<=0){
     // metto processo nella ready list
-    List_insert(&ready_list,ready_list.last,running);
+    List_insert(&ready_list,ready_list.last,(ListItem*)running);
 
     // prendo il SemDescriptor dalla semaphore waiting list
     sem_desc_ptr=(SemDescriptorPtr*)List_detach(&sem->waiting_descriptors,sem->waiting_descriptors.first);
 
     // inserisco SemDescriptor nella sem_descriptor list
-    List_insert(&sem->descriptors,sem->descriptors.last,sem_desc_ptr);
+    List_insert(&sem->descriptors,sem->descriptors.last,(ListItem*)sem_desc_ptr);
 
     // mi prendo il prossimo processo da schedulare dalla waiting list
-    List_detach(&waiting_list,sem_desc_ptr->descriptor->pcb);
+    List_detach(&waiting_list,(ListItem*)sem_desc_ptr->descriptor->pcb);
 
     // setto stato ready, pronto per essere schedulato
     running->status=Ready;
