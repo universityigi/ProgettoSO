@@ -10,9 +10,15 @@ void internal_semWait(){
   // fd della syscall
   int fd=running->syscall_args[0];
 
+  printf("[PROCESSO %d] CHIAMATO SEMWAIT, fd=%d\n",running->pid,fd);
+
   // mi prendo descrittore del semaforo su cui devo fare wait
   SemDescriptor* sem_desc= SemDescriptorList_byFd(&running->sem_descriptors,fd);
 
+  if(!sem_desc){
+    running->syscall_retvalue=-1;
+    return;
+  }
   // puntatore SemDescriptorPtr
   SemDescriptorPtr* sem_desc_ptr=sem_desc->ptr;
 
@@ -20,10 +26,8 @@ void internal_semWait(){
   Semaphore* sem=sem_desc->semaphore;
   //verifico se count <=0
   sem->count=sem->count-1;
-  printf("COUNT value=%d id = %d\n", sem->count,sem->id);
   if(sem->count<0){
-    printf("semaphore waiting id=%d e count=%d\n", sem->id, sem->count);
-    // rimuovo descrittori
+      // rimuovo descrittori
     List_detach(&sem->descriptors, sem_desc);
 
     // inserisco processo chiamante nella waiting semaphore list

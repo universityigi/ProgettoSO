@@ -14,6 +14,10 @@ void internal_semClose(){
   // prendo il descrittore dalla lista dei descritttori
   SemDescriptor* sem_desc=SemDescriptorList_byFd(&running->sem_descriptors,sem_fd);
 
+  if(!sem_desc){
+    running->syscall_retvalue=-1;
+    return;
+  }
   // rimuovo descrittore
   List_detach(&running->sem_descriptors,sem_desc);
 
@@ -33,7 +37,6 @@ void internal_semClose(){
   //dealloco risorse e setto valore di ritorno della syscall
   SemDescriptor_free(sem_desc);
   SemDescriptorPtr_free(sem_desc_ptr);
-  printf("Semaphore close id=%d e type=%d, free!\n",sem->id,sem->count);
   running->syscall_retvalue=0;
   return;
 

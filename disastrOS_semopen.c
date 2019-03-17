@@ -8,9 +8,9 @@
 
 void internal_semOpen(){
 
-  // prendo id e il type della syscall 
+  // prendo id e il count della syscall 
   int sem_id=running->syscall_args[0];
-  int sem_type=running->syscall_args[1];
+  int sem_count=running->syscall_args[1];
 
   // mi prendo il Semaphore corrispondente tramite il suo id nella lista dei semafori,
   // creata in disastrOS_globals.h
@@ -18,14 +18,17 @@ void internal_semOpen(){
 
   // se semaphore sem non è stato allocato/aperto lo alloco
   if(!sem){
-    sem = Semaphore_alloc(sem_id,sem_type);
+    sem = Semaphore_alloc(sem_id,sem_count);
     List_insert(&semaphores_list,semaphores_list.last,(ListItem*)sem);
-    printf("Semaphore sem_id=%d e sem_type=%d, allocato!\n",sem_id, sem_type);
   }
 
   // alloco il SemDescriptor riferito a quel semaphore
   SemDescriptor* sem_desc = SemDescriptor_alloc(running->last_sem_fd,sem,running);
 
+  if(!sem_desc){
+    running->syscall_retvalue=-1;
+    return;
+  }
   // inserisco nella lista dei descrittori del semaphore del processo
   List_insert(&running->sem_descriptors, running->sem_descriptors.last,(ListItem*)sem_desc);
 

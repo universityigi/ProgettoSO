@@ -321,6 +321,10 @@ int disastrOS_semclose(int fd){
 int disastrOS_semwait(int fd){
   disastrOS_syscall(DSOS_CALL_SEMWAIT,fd);
 }
+// sempost
+int disastrOS_sempost(int fd){
+  disastrOS_syscall(DSOS_CALL_SEMPOST,fd);
+}
 
 
 

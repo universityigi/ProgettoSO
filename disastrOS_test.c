@@ -21,16 +21,44 @@ void childFunction(void* args){
   int fd=disastrOS_openResource(disastrOS_getpid(),type,mode);
   printf("fd=%d\n", fd);
 
-  printf("----OPEN SEMAPHORES----\n");
-  int sem1=disastrOS_semopen(1,0);
+  printf("\n");
+  printf("-----------------------------------------------\n");
+  printf("---------------OPEN SEMAPHORES-----------------\n");
+  printf("-----------------------------------------------\n");
+  printf("\n");
+  int sem1=disastrOS_semopen(1,8);
+  int sem2=disastrOS_semopen(2,0);
+
 
   disastrOS_printStatus();
+  
+    int t;
+  if(disastrOS_getpid()%2==0){
+    printf("PRODUCO\n");
+    for (t=0; t<5; t++){
+      disastrOS_semwait(sem1);
+      disastrOS_printStatus();
+      disastrOS_sempost(sem2);
+    }
+  }
+  else{
+    printf("CONSUMO\n");
+    for (t=0; t<5; t++){
+      disastrOS_semwait(sem2);
+      disastrOS_printStatus();
+      disastrOS_sempost(sem1);
 
-  disastrOS_semwait(sem1);
-  disastrOS_printStatus();
-
-  printf("----CLOSE SEMAPHORES----\n");
+    }
+  }
+  printf("PID=%d IS TERMINATING\n", disastrOS_getpid());
+  
+  printf("\n");
+  printf("-----------------------------------------------\n");
+  printf("---------------CLOSE SEMAPHORES----------------\n");
+  printf("-----------------------------------------------\n");
+  printf("\n");
   disastrOS_semclose(sem1);
+  disastrOS_semclose(sem2);
   disastrOS_exit(disastrOS_getpid()+1);
 }
 
