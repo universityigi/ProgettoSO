@@ -21,17 +21,24 @@ void childFunction(void* args){
   int mode=0;
   int fd=disastrOS_openResource(disastrOS_getpid(),type,mode);
   printf("fd=%d\n", fd);
-
-
-
-
+  printf("\n");
+  printf("-----------------------------------------------\n");
+  printf("---------------OPEN SEMAPHORES-----------------\n");
+  printf("-----------------------------------------------\n");
+  printf("\n");
+  sem1=disastrOS_semopen(1,4);
+  sem2=disastrOS_semopen(2,0);
+  sem3=disastrOS_semopen(3,-1);
+  sem4=disastrOS_semopen(4,1);
+ 
   disastrOS_printStatus();
   
-  for (int i=0; i<(disastrOS_getpid()+1); ++i){
+  for (int i=0; i<4; ++i){
     printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
     disastrOS_sleep((20-disastrOS_getpid())*5);
     printf("%d\n", disastrOS_getpid());
-    if(disastrOS_getpid()%2!=0){
+    
+    if(disastrOS_getpid()%2==0){
       
           printf("[PROCESSO %d È UN PRODUTTORE]\n",disastrOS_getpid());
           disastrOS_semwait(sem1);
@@ -39,7 +46,7 @@ void childFunction(void* args){
           printf("[PROCESSO %d] è in sezione critica\n",disastrOS_getpid() );
           disastrOS_sempost(sem4);
           disastrOS_sempost(sem2);
-        
+          
     }
     else{
       
@@ -59,9 +66,14 @@ void childFunction(void* args){
   printf("---------------CLOSE SEMAPHORES----------------\n");
   printf("-----------------------------------------------\n");
   printf("\n");
+
   disastrOS_semclose(sem1);
   disastrOS_semclose(sem2);
+  disastrOS_semclose(sem3);
+  disastrOS_semclose(sem4);
+
   disastrOS_exit(disastrOS_getpid()+1);
+   disastrOS_printStatus();
 }
 
 
@@ -81,18 +93,9 @@ void initFunction(void* args) {
     int fd=disastrOS_openResource(i,type,mode);
     printf("fd=%d\n", fd);
     disastrOS_spawn(childFunction, 0);
-    alive_children++;
-
-    printf("\n");
-    printf("-----------------------------------------------\n");
-    printf("---------------OPEN SEMAPHORES-----------------\n");
-    printf("-----------------------------------------------\n");
-    printf("\n");
-    sem1=disastrOS_semopen(1,3);
-    sem2=disastrOS_semopen(2,0);
-    sem3=disastrOS_semopen(3,-1);
-    sem4=disastrOS_semopen(4,1);
+    alive_children++;  
   }
+  
 
   disastrOS_printStatus();
   int retval;

@@ -22,16 +22,24 @@ void internal_semWait(){
   // puntatore SemDescriptorPtr
   SemDescriptorPtr* sem_desc_ptr=sem_desc->ptr;
 
+
+  if(!sem_desc_ptr){
+    running->syscall_retvalue=-1;
+    return;
+  }
+
   // prendo semaforo dal descrittore
   Semaphore* sem=sem_desc->semaphore;
-  printf("id wait = %d\n",sem->id);
+  if(!sem){
+    running->syscall_retvalue=-1;
+    return;
+  }
   //verifico se count <=0
   sem->count=sem->count-1;
-    printf("count wait = %d\n",sem->count);
 
   if(sem->count<0){
       // rimuovo descrittori
-    List_detach(&sem->descriptors, (ListItem*)sem_desc);
+    List_detach(&sem->descriptors, (ListItem*)sem_desc_ptr);
 
     // inserisco processo chiamante nella waiting semaphore list
     List_insert(&sem->waiting_descriptors, sem->waiting_descriptors.last,(ListItem*)sem_desc_ptr);

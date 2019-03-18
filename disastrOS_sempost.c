@@ -26,12 +26,10 @@ void internal_semPost(){
 
   // semaforo su cui fare sempost
   Semaphore* sem=sem_desc->semaphore;
-  printf("id post = %d\n",sem->id);
 
   // incremento il count
   sem->count++;
 
-  printf("count  post = %d\n",sem->count);
 
   // se count <=0 allora devo mettere il processo corrente nella ready list
   if(sem->count<=0){

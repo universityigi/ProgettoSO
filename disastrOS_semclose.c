@@ -23,9 +23,18 @@ void internal_semClose(){
 
   // prendo il semaforo dal descrittore sem_desc
   Semaphore* sem=sem_desc->semaphore;
+
+  if(!sem){
+    running->syscall_retvalue=-1;
+    return;
+  }
   // prendo puntatore alla entry nella resource list di quel descrittore sem_desc
   SemDescriptorPtr* sem_desc_ptr =(SemDescriptorPtr*) List_detach(&sem->descriptors, (ListItem*)sem_desc->ptr);
 
+  if(!sem_desc_ptr){
+    running->syscall_retvalue=-1;
+    return;
+  }
   // controllo che se non ci sono descrittore nel semaforo sem, sia nella lista
   // dei descrittori sia nella lista , rimuovo il semaphore dalla lista dei semafori
   // dealloco
