@@ -12,6 +12,12 @@ void internal_semOpen(){
   int sem_id=running->syscall_args[0];
   int sem_count=running->syscall_args[1];
 
+  // controllo sul count
+  if(sem_count<0){
+    running->syscall_retvalue=-1;
+    return;
+  }
+
   // mi prendo il Semaphore corrispondente tramite il suo id nella lista dei semafori,
   // creata in disastrOS_globals.h
   Semaphore* sem = SemaphoreList_byId(&semaphores_list, sem_id);

@@ -24,8 +24,11 @@ void internal_semWait(){
 
   // prendo semaforo dal descrittore
   Semaphore* sem=sem_desc->semaphore;
+  printf("id wait = %d\n",sem->id);
   //verifico se count <=0
   sem->count=sem->count-1;
+    printf("count wait = %d\n",sem->count);
+
   if(sem->count<0){
       // rimuovo descrittori
     List_detach(&sem->descriptors, (ListItem*)sem_desc);
@@ -44,6 +47,8 @@ void internal_semWait(){
 
     // setto running
     running=p_next;
+    printf("[PROCESSO %d] RUNNING\n",running->pid);
+
   }
   running->syscall_retvalue=0;
   

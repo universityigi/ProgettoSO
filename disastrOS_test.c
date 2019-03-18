@@ -4,6 +4,7 @@
 
 #include "disastrOS.h"
 
+int sem1,sem2,sem3,sem4;
 // we need this to handle the sleep state
 void sleeperFunction(void* args){
   printf("Hello, I am the sleeper, and I sleep %d\n",disastrOS_getpid());
@@ -21,33 +22,34 @@ void childFunction(void* args){
   int fd=disastrOS_openResource(disastrOS_getpid(),type,mode);
   printf("fd=%d\n", fd);
 
-  printf("\n");
-  printf("-----------------------------------------------\n");
-  printf("---------------OPEN SEMAPHORES-----------------\n");
-  printf("-----------------------------------------------\n");
-  printf("\n");
-  int sem1=disastrOS_semopen(1,8);
-  int sem2=disastrOS_semopen(2,0);
+
 
 
   disastrOS_printStatus();
   
-    int t;
-  if(disastrOS_getpid()%2==0){
-    printf("PRODUCO\n");
-    for (t=0; t<5; t++){
-      disastrOS_semwait(sem1);
-      disastrOS_printStatus();
-      disastrOS_sempost(sem2);
+  for (int i=0; i<(disastrOS_getpid()+1); ++i){
+    printf("PID: %d, iterate %d\n", disastrOS_getpid(), i);
+    disastrOS_sleep((20-disastrOS_getpid())*5);
+    printf("%d\n", disastrOS_getpid());
+    if(disastrOS_getpid()%2!=0){
+      
+          printf("[PROCESSO %d È UN PRODUTTORE]\n",disastrOS_getpid());
+          disastrOS_semwait(sem1);
+          disastrOS_semwait(sem4);
+          printf("[PROCESSO %d] è in sezione critica\n",disastrOS_getpid() );
+          disastrOS_sempost(sem4);
+          disastrOS_sempost(sem2);
+        
     }
-  }
-  else{
-    printf("CONSUMO\n");
-    for (t=0; t<5; t++){
-      disastrOS_semwait(sem2);
-      disastrOS_printStatus();
-      disastrOS_sempost(sem1);
-
+    else{
+      
+          printf("[PROCESSO %d È UN CONSUMATORE]\n",disastrOS_getpid());
+          disastrOS_semwait(sem2);
+          disastrOS_semwait(sem4);
+          printf("[PROCESSO %d] è in sezione critica\n",disastrOS_getpid() );
+          disastrOS_sempost(sem4);
+          disastrOS_sempost(sem1);
+        
     }
   }
   printf("PID=%d IS TERMINATING\n", disastrOS_getpid());
@@ -80,6 +82,16 @@ void initFunction(void* args) {
     printf("fd=%d\n", fd);
     disastrOS_spawn(childFunction, 0);
     alive_children++;
+
+    printf("\n");
+    printf("-----------------------------------------------\n");
+    printf("---------------OPEN SEMAPHORES-----------------\n");
+    printf("-----------------------------------------------\n");
+    printf("\n");
+    sem1=disastrOS_semopen(1,3);
+    sem2=disastrOS_semopen(2,0);
+    sem3=disastrOS_semopen(3,-1);
+    sem4=disastrOS_semopen(4,1);
   }
 
   disastrOS_printStatus();
