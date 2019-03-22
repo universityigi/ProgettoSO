@@ -15,25 +15,21 @@ void internal_semWait(){
   // mi prendo descrittore del semaforo su cui devo fare wait
   SemDescriptor* sem_desc= SemDescriptorList_byFd(&running->sem_descriptors,fd);
 
-  if(!sem_desc){
-    running->syscall_retvalue=-1;
-    return;
-  }
+  // controllo che descrittore esista
+  HANDLE_ERROR(!sem_desc,DSOS_SEM_DESC_NOT_FOUND,"Errore! SemDescriptor non valido");
+
   // puntatore SemDescriptorPtr
   SemDescriptorPtr* sem_desc_ptr=sem_desc->ptr;
 
-
-  if(!sem_desc_ptr){
-    running->syscall_retvalue=-1;
-    return;
-  }
+  // controllo che SemDescriptor esista
+  HANDLE_ERROR(!sem_desc_ptr,DSOS_SEM_DESC_PTR_NOT_FOUND,"Errore! SemDescriptorPtr non valido");
 
   // prendo semaforo dal descrittore
   Semaphore* sem=sem_desc->semaphore;
-  if(!sem){
-    running->syscall_retvalue=-1;
-    return;
-  }
+  
+  // controllo che sem esista
+  HANDLE_ERROR(!sem, DSOS_SEM_NOT_FOUND,"Errore! Semaforo non valido");
+
   //verifico se count <=0
   sem->count=sem->count-1;
 

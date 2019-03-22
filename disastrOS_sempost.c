@@ -16,14 +16,11 @@ void internal_semPost(){
   // descrittore del semaforo su cui fare sempost
   SemDescriptor* sem_desc=SemDescriptorList_byFd(&running->sem_descriptors,fd);
 
-  // controllo
-  if(!sem_desc){
-    running->syscall_retvalue=-1;
-    return;
-  }
+  // controllo descrittore esista
+  HANDLE_ERROR(!sem_desc,DSOS_SEM_DESC_NOT_FOUND, "Errore! SemDescriptor non valido");
+  
   SemDescriptorPtr* sem_desc_ptr;
   
-
   // semaforo su cui fare sempost
   Semaphore* sem=sem_desc->semaphore;
 

@@ -1,11 +1,28 @@
 #pragma once
 #include "disastrOS_pcb.h"
 #include "linked_list.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+
+
+// funzione per gestire errori
+#define HANDLE_ERROR(cond, err, msg) do {                           \
+        if (cond) {                                                 \
+            fprintf(stderr, "%s: %d\n", msg, err);        \
+            running->syscall_retvalue=err;                          \
+            return;                                                 \
+        }                                                           \
+    } while(0); 
+
 
 #ifdef _DISASTROS_DEBUG_
 #include <stdio.h>
 
 #define disastrOS_debug(...) printf(__VA_ARGS__) 
+
 
 #else //_DISASTROS_DEBUG_
 
@@ -47,3 +64,4 @@ int disastrOS_destroyResource(int resource_id);
 
 // debug function, prints the state of the internal system
 void disastrOS_printStatus();
+

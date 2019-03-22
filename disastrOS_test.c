@@ -26,11 +26,12 @@ void childFunction(void* args){
   printf("---------------OPEN SEMAPHORES-----------------\n");
   printf("-----------------------------------------------\n");
   printf("\n");
-  sem1=disastrOS_semopen(1,2);
+  sem1=disastrOS_semopen(1,10);
   sem2=disastrOS_semopen(2,0);
-  sem3=disastrOS_semopen(3,-1);
+  sem3=disastrOS_semopen(3,-1); // mi da errore -14
   sem4=disastrOS_semopen(4,1);
  
+  
   disastrOS_printStatus();
 
   for (int i=0; i<disastrOS_getpid()+1; ++i){
@@ -67,7 +68,7 @@ void childFunction(void* args){
 
   disastrOS_semclose(sem1);
   disastrOS_semclose(sem2);
-  disastrOS_semclose(sem3);
+  disastrOS_semclose(sem3); // mi da errore -18
   disastrOS_semclose(sem4);
 
   disastrOS_exit(disastrOS_getpid()+1);

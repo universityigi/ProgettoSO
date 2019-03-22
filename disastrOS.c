@@ -327,7 +327,6 @@ int disastrOS_sempost(int fd){
 }
 
 
-
 void disastrOS_printStatus(){
   printf("****************** DisastrOS ******************\n");
   printf("Running: ");
